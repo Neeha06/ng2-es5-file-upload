@@ -1,127 +1,112 @@
-import {FileLikeObject} from './file-like-object';
-import {FileUploader} from './file-uploader';
-
-export class FileItem {
-  public file:FileLikeObject;
-  public _file:File;
-  public alias:string = 'file';
-  public url:string = '/';
-  public method:string = 'POST';
-  public headers:any = [];
-  public withCredentials:boolean = true;
-  public formData:any = [];
-  public isReady:boolean = false;
-  public isUploading:boolean = false;
-  public isUploaded:boolean = false;
-  public isSuccess:boolean = false;
-  public isCancel:boolean = false;
-  public isError:boolean = false;
-  public progress:number = 0;
-  public index:number = null;
-
-  constructor(private uploader:FileUploader, private some:any, private options:any) {
-    this.file = new FileLikeObject(some);
-    this._file = some;
-    this.url = uploader.url;
-  }
-
-  public upload() {
-    try {
-      this.uploader.uploadItem(this);
-    } catch (e) {
-      this.uploader._onCompleteItem(this, '', 0, []);
-      this.uploader._onErrorItem(this, '', 0, []);
+var file_like_object_1 = require('./file-like-object');
+var FileItem = (function () {
+    function FileItem(uploader, some, options) {
+        this.uploader = uploader;
+        this.some = some;
+        this.options = options;
+        this.alias = 'file';
+        this.url = '/';
+        this.method = 'POST';
+        this.headers = [];
+        this.withCredentials = true;
+        this.formData = [];
+        this.isReady = false;
+        this.isUploading = false;
+        this.isUploaded = false;
+        this.isSuccess = false;
+        this.isCancel = false;
+        this.isError = false;
+        this.progress = 0;
+        this.index = null;
+        this.file = new file_like_object_1.FileLikeObject(some);
+        this._file = some;
+        this.url = uploader.url;
     }
-  }
-
-  public cancel() {
-    this.uploader.cancelItem(this);
-  }
-
-  public remove() {
-    this.uploader.removeFromQueue(this);
-  }
-
-  public onBeforeUpload() {
-  }
-
-  public onProgress(progress:number) {
-  }
-
-  public onSuccess(response:any, status:any, headers:any) {
-  }
-
-  public onError(response:any, status:any, headers:any) {
-  }
-
-  public onCancel(response:any, status:any, headers:any) {
-  }
-
-  public onComplete(response:any, status:any, headers:any) {
-  }
-
-  private _onBeforeUpload() {
-    this.isReady = true;
-    this.isUploading = true;
-    this.isUploaded = false;
-    this.isSuccess = false;
-    this.isCancel = false;
-    this.isError = false;
-    this.progress = 0;
-    this.onBeforeUpload();
-  }
-
-  private _onProgress(progress:number) {
-    this.progress = progress;
-    this.onProgress(progress);
-  }
-
-  private _onSuccess(response:any, status:any, headers:any) {
-    this.isReady = false;
-    this.isUploading = false;
-    this.isUploaded = true;
-    this.isSuccess = true;
-    this.isCancel = false;
-    this.isError = false;
-    this.progress = 100;
-    this.index = null;
-    this.onSuccess(response, status, headers);
-  }
-
-  private _onError(response:any, status:any, headers:any) {
-    this.isReady = false;
-    this.isUploading = false;
-    this.isUploaded = true;
-    this.isSuccess = false;
-    this.isCancel = false;
-    this.isError = true;
-    this.progress = 0;
-    this.index = null;
-    this.onError(response, status, headers);
-  }
-
-  private _onCancel(response:any, status:any, headers:any) {
-    this.isReady = false;
-    this.isUploading = false;
-    this.isUploaded = false;
-    this.isSuccess = false;
-    this.isCancel = true;
-    this.isError = false;
-    this.progress = 0;
-    this.index = null;
-    this.onCancel(response, status, headers);
-  }
-
-  private _onComplete(response:any, status:any, headers:any) {
-    this.onComplete(response, status, headers);
-
-    if (this.uploader.removeAfterUpload) {
-      this.remove();
-    }
-  }
-
-  private _prepareToUploading() {
-    this.index = this.index || ++this.uploader._nextIndex;
-    this.isReady = true;
-  }
-}
+    FileItem.prototype.upload = function () {
+        try {
+            this.uploader.uploadItem(this);
+        }
+        catch (e) {
+            this.uploader._onCompleteItem(this, '', 0, []);
+            this.uploader._onErrorItem(this, '', 0, []);
+        }
+    };
+    FileItem.prototype.cancel = function () {
+        this.uploader.cancelItem(this);
+    };
+    FileItem.prototype.remove = function () {
+        this.uploader.removeFromQueue(this);
+    };
+    FileItem.prototype.onBeforeUpload = function () {
+    };
+    FileItem.prototype.onProgress = function (progress) {
+    };
+    FileItem.prototype.onSuccess = function (response, status, headers) {
+    };
+    FileItem.prototype.onError = function (response, status, headers) {
+    };
+    FileItem.prototype.onCancel = function (response, status, headers) {
+    };
+    FileItem.prototype.onComplete = function (response, status, headers) {
+    };
+    FileItem.prototype._onBeforeUpload = function () {
+        this.isReady = true;
+        this.isUploading = true;
+        this.isUploaded = false;
+        this.isSuccess = false;
+        this.isCancel = false;
+        this.isError = false;
+        this.progress = 0;
+        this.onBeforeUpload();
+    };
+    FileItem.prototype._onProgress = function (progress) {
+        this.progress = progress;
+        this.onProgress(progress);
+    };
+    FileItem.prototype._onSuccess = function (response, status, headers) {
+        this.isReady = false;
+        this.isUploading = false;
+        this.isUploaded = true;
+        this.isSuccess = true;
+        this.isCancel = false;
+        this.isError = false;
+        this.progress = 100;
+        this.index = null;
+        this.onSuccess(response, status, headers);
+    };
+    FileItem.prototype._onError = function (response, status, headers) {
+        this.isReady = false;
+        this.isUploading = false;
+        this.isUploaded = true;
+        this.isSuccess = false;
+        this.isCancel = false;
+        this.isError = true;
+        this.progress = 0;
+        this.index = null;
+        this.onError(response, status, headers);
+    };
+    FileItem.prototype._onCancel = function (response, status, headers) {
+        this.isReady = false;
+        this.isUploading = false;
+        this.isUploaded = false;
+        this.isSuccess = false;
+        this.isCancel = true;
+        this.isError = false;
+        this.progress = 0;
+        this.index = null;
+        this.onCancel(response, status, headers);
+    };
+    FileItem.prototype._onComplete = function (response, status, headers) {
+        this.onComplete(response, status, headers);
+        if (this.uploader.removeAfterUpload) {
+            this.remove();
+        }
+    };
+    FileItem.prototype._prepareToUploading = function () {
+        this.index = this.index || ++this.uploader._nextIndex;
+        this.isReady = true;
+    };
+    return FileItem;
+})();
+exports.FileItem = FileItem;
+//# sourceMappingURL=file-item.js.map

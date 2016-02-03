@@ -1,405 +1,303 @@
-import {FileLikeObject} from './file-like-object';
-import {FileItem} from './file-item';
-
-function isFile(value:any) {
-  return (File && value instanceof File);
+var file_like_object_1 = require('./file-like-object');
+var file_item_1 = require('./file-item');
+function isFile(value) {
+    return (File && value instanceof File);
 }
-
-function isFileLikeObject(value:any) {
-  return value instanceof FileLikeObject;
+function isFileLikeObject(value) {
+    return value instanceof file_like_object_1.FileLikeObject;
 }
-
-export class FileUploader {
-  public url:string;
-  public authToken:string;
-  public isUploading:boolean = false;
-  public queue:Array<any> = [];
-  public progress:number = 0;
-  public autoUpload:boolean = false;
-  public isHTML5:boolean = true;
-  public removeAfterUpload:boolean = false;
-  public queueLimit:number;
-  public _nextIndex = 0;
-  public filters:Array<any> = [];
-  private _failFilterIndex:number;
-
-  constructor(public options:any) {
-    // Object.assign(this, options);
-    this.url = options.url;
-    this.authToken = options.authToken;
-    this.filters.unshift({name: 'queueLimit', fn: this._queueLimitFilter});
-    this.filters.unshift({name: 'folder', fn: this._folderFilter});
-  }
-
-  public addToQueue(files:any[], options:any, filters:any) {
-    let list:any[] = [];
-    for (let file of files) {
-      list.push(file);
+var FileUploader = (function () {
+    function FileUploader(options) {
+        this.options = options;
+        this.isUploading = false;
+        this.queue = [];
+        this.progress = 0;
+        this.autoUpload = false;
+        this.isHTML5 = true;
+        this.removeAfterUpload = false;
+        this._nextIndex = 0;
+        this.filters = [];
+        this.url = options.url;
+        this.authToken = options.authToken;
+        this.filters.unshift({ name: 'queueLimit', fn: this._queueLimitFilter });
+        this.filters.unshift({ name: 'folder', fn: this._folderFilter });
     }
-
-    let arrayOfFilters = this._getFilters(filters);
-    let count = this.queue.length;
-    let addedFileItems:any[] = [];
-
-    list.map(some => {
-      let temp = new FileLikeObject(some);
-
-      if (this._isValidFile(temp, [], options)) {
-        let fileItem = new FileItem(this, some, options);
-        addedFileItems.push(fileItem);
-        this.queue.push(fileItem);
-        this._onAfterAddingFile(fileItem);
-      } else {
-        let filter = arrayOfFilters[this._failFilterIndex];
-        this._onWhenAddingFileFailed(temp, filter, options);
-      }
-    });
-
-    if (this.queue.length !== count) {
-      this._onAfterAddingAll(addedFileItems);
-      this.progress = this._getTotalProgress();
-    }
-
-    this._render();
-
-    if (this.autoUpload) {
-      this.uploadAll();
-    }
-  }
-
-  public removeFromQueue(value:any) {
-    let index = this.getIndexOfItem(value);
-    let item = this.queue[index];
-    if (item.isUploading) {
-      item.cancel();
-    }
-
-    this.queue.splice(index, 1);
-    this.progress = this._getTotalProgress();
-  }
-
-  public clearQueue() {
-    while (this.queue.length) {
-      this.queue[0].remove();
-    }
-
-    this.progress = 0;
-  }
-
-  public uploadItem(value:FileItem) {
-    let index = this.getIndexOfItem(value);
-    let item = this.queue[index];
-    let transport = this.isHTML5 ? '_xhrTransport' : '_iframeTransport';
-
-    item._prepareToUploading();
-    if (this.isUploading) {
-      return;
-    }
-
-    this.isUploading = true;
-    (<any>this)[transport](item);
-  }
-
-  public cancelItem(value:any) {
-    let index = this.getIndexOfItem(value);
-    let item = this.queue[index];
-    let prop = this.isHTML5 ? '_xhr' : '_form';
-
-    if (item && item.isUploading) {
-      item[prop].abort();
-    }
-  }
-
-  public uploadAll() {
-    let items = this.getNotUploadedItems().filter(item => !item.isUploading);
-    if (!items.length) {
-      return;
-    }
-
-    items.map(item => item._prepareToUploading());
-    items[0].upload();
-  }
-
-  public cancelAll() {
-    let items = this.getNotUploadedItems();
-    items.map(item => item.cancel());
-  }
-
-
-  public isFile(value:any) {
-    return isFile(value);
-  }
-
-  public isFileLikeObject(value:any) {
-    return value instanceof FileLikeObject;
-  }
-
-  public getIndexOfItem(value:any) {
-    return typeof value === 'number' ? value : this.queue.indexOf(value);
-  }
-
-  public getNotUploadedItems() {
-    return this.queue.filter(item => !item.isUploaded);
-  }
-
-  public getReadyItems() {
-    return this.queue
-      .filter(item => (item.isReady && !item.isUploading))
-      .sort((item1, item2) => item1.index - item2.index);
-  }
-
-  public destroy() {
-    /*forEach(this._directives, (key) => {
-     forEach(this._directives[key], (object) => {
-     object.destroy();
-     });
-     });*/
-  }
-
-  public onAfterAddingAll(fileItems:any) {
-  }
-
-  public onAfterAddingFile(fileItem:any) {
-  }
-
-  public onWhenAddingFileFailed(item:any, filter:any, options:any) {
-  }
-
-  public onBeforeUploadItem(fileItem:any) {
-  }
-
-  public onProgressItem(fileItem:any, progress:any) {
-  }
-
-  public onProgressAll(progress:any) {
-  }
-
-  public onSuccessItem(item:any, response:any, status:any, headers:any) {
-  }
-
-  public onErrorItem(item:any, response:any, status:any, headers:any) {
-  }
-
-  public onCancelItem(item:any, response:any, status:any, headers:any) {
-  }
-
-  public onCompleteItem(item:any, response:any, status:any, headers:any) {
-  }
-
-  public onCompleteAll() {
-  }
-
-  private _getTotalProgress(value = 0) {
-    if (this.removeAfterUpload) {
-      return value;
-    }
-
-    let notUploaded = this.getNotUploadedItems().length;
-    let uploaded = notUploaded ? this.queue.length - notUploaded : this.queue.length;
-    let ratio = 100 / this.queue.length;
-    let current = value * ratio / 100;
-
-    return Math.round(uploaded * ratio + current);
-  }
-
-  private _getFilters(filters:any) {
-    if (!filters) {
-      return this.filters;
-    }
-
-    if (Array.isArray(filters)) {
-      return filters;
-    }
-
-    let names = filters.match(/[^\s,]+/g);
-    return this.filters
-      .filter(filter => names.indexOf(filter.name) !== -1);
-  }
-
-  private _render() {
-    // todo: ?
-  }
-
-  private _folderFilter(item:any) {
-    return !!(item.size || item.type);
-  }
-
-  private _queueLimitFilter() {
-    return this.queue.length < this.queueLimit;
-  }
-
-  private _isValidFile(file:any, filters:any, options:any) {
-    this._failFilterIndex = -1;
-    return !filters.length ? true : filters.every((filter:any) => {
-      this._failFilterIndex++;
-      return filter.fn.call(this, file, options);
-    });
-  }
-
-  private _isSuccessCode(status:any) {
-    return (status >= 200 && status < 300) || status === 304;
-  }
-
-  private _transformResponse(response:any, headers:any):any {
-    // todo: ?
-    /*var headersGetter = this._headersGetter(headers);
-     forEach($http.defaults.transformResponse, (transformFn) => {
-     response = transformFn(response, headersGetter);
-     });*/
-    return response;
-  }
-
-  private _parseHeaders(headers:any) {
-    let parsed:any = {}, key:any, val:any, i:any;
-
-    if (!headers) {
-      return parsed;
-    }
-
-    headers.split('\n').map((line:any) => {
-      i = line.indexOf(':');
-      key = line.slice(0, i).trim().toLowerCase();
-      val = line.slice(i + 1).trim();
-
-      if (key) {
-        parsed[key] = parsed[key] ? parsed[key] + ', ' + val : val;
-      }
-    });
-
-    return parsed;
-  }
-
-  private _headersGetter(parsedHeaders:any) {
-    return (name:any) => {
-      if (name) {
-        return parsedHeaders[name.toLowerCase()] || null;
-      }
-      return parsedHeaders;
+    FileUploader.prototype.addToQueue = function (files, options, filters) {
+        var _this = this;
+        var list = [];
+        for (var _i = 0; _i < files.length; _i++) {
+            var file = files[_i];
+            list.push(file);
+        }
+        var arrayOfFilters = this._getFilters(filters);
+        var count = this.queue.length;
+        var addedFileItems = [];
+        list.map(function (some) {
+            var temp = new file_like_object_1.FileLikeObject(some);
+            if (_this._isValidFile(temp, [], options)) {
+                var fileItem = new file_item_1.FileItem(_this, some, options);
+                addedFileItems.push(fileItem);
+                _this.queue.push(fileItem);
+                _this._onAfterAddingFile(fileItem);
+            }
+            else {
+                var filter = arrayOfFilters[_this._failFilterIndex];
+                _this._onWhenAddingFileFailed(temp, filter, options);
+            }
+        });
+        if (this.queue.length !== count) {
+            this._onAfterAddingAll(addedFileItems);
+            this.progress = this._getTotalProgress();
+        }
+        this._render();
+        if (this.autoUpload) {
+            this.uploadAll();
+        }
     };
-  }
-
-  _xhrTransport(item:any) {
-    let xhr = item._xhr = new XMLHttpRequest();
-    let form = new FormData();
-
-    this._onBeforeUploadItem(item);
-
-    // todo
-    /*item.formData.map(obj => {
-     obj.map((value, key) => {
-     form.append(key, value);
-     });
-     });*/
-
-    if (typeof item._file.size !== 'number') {
-      throw new TypeError('The file specified is no longer valid');
-    }
-
-    form.append(item.alias, item._file, item.file.name);
-
-    xhr.upload.onprogress = (event) => {
-      let progress = Math.round(event.lengthComputable ? event.loaded * 100 / event.total : 0);
-      this._onProgressItem(item, progress);
+    FileUploader.prototype.removeFromQueue = function (value) {
+        var index = this.getIndexOfItem(value);
+        var item = this.queue[index];
+        if (item.isUploading) {
+            item.cancel();
+        }
+        this.queue.splice(index, 1);
+        this.progress = this._getTotalProgress();
     };
-
-    xhr.onload = () => {
-      let headers = this._parseHeaders(xhr.getAllResponseHeaders());
-      let response = this._transformResponse(xhr.response, headers);
-      let gist = this._isSuccessCode(xhr.status) ? 'Success' : 'Error';
-      let method = '_on' + gist + 'Item';
-      (<any>this)[method](item, response, xhr.status, headers);
-      this._onCompleteItem(item, response, xhr.status, headers);
+    FileUploader.prototype.clearQueue = function () {
+        while (this.queue.length) {
+            this.queue[0].remove();
+        }
+        this.progress = 0;
     };
-
-    xhr.onerror = () => {
-      let headers = this._parseHeaders(xhr.getAllResponseHeaders());
-      let response = this._transformResponse(xhr.response, headers);
-      this._onErrorItem(item, response, xhr.status, headers);
-      this._onCompleteItem(item, response, xhr.status, headers);
+    FileUploader.prototype.uploadItem = function (value) {
+        var index = this.getIndexOfItem(value);
+        var item = this.queue[index];
+        var transport = this.isHTML5 ? '_xhrTransport' : '_iframeTransport';
+        item._prepareToUploading();
+        if (this.isUploading) {
+            return;
+        }
+        this.isUploading = true;
+        this[transport](item);
     };
-
-    xhr.onabort = () => {
-      let headers = this._parseHeaders(xhr.getAllResponseHeaders());
-      let response = this._transformResponse(xhr.response, headers);
-      this._onCancelItem(item, response, xhr.status, headers);
-      this._onCompleteItem(item, response, xhr.status, headers);
+    FileUploader.prototype.cancelItem = function (value) {
+        var index = this.getIndexOfItem(value);
+        var item = this.queue[index];
+        var prop = this.isHTML5 ? '_xhr' : '_form';
+        if (item && item.isUploading) {
+            item[prop].abort();
+        }
     };
-
-    xhr.open(item.method, item.url, true);
-    xhr.withCredentials = item.withCredentials;
-
-    // todo
-    /*item.headers.map((value, name) => {
-     xhr.setRequestHeader(name, value);
-     });*/
-
-    if (this.authToken) {
-      xhr.setRequestHeader('Authorization', this.authToken);
-    }
-
-    xhr.send(form);
-    this._render();
-  }
-
-  private _iframeTransport(item:any) {
-    // todo: implement it later
-  }
-
-  private _onWhenAddingFileFailed(item:any, filter:any, options:any) {
-    this.onWhenAddingFileFailed(item, filter, options);
-  }
-
-  private _onAfterAddingFile(item:any) {
-    this.onAfterAddingFile(item);
-  }
-
-  private _onAfterAddingAll(items:any) {
-    this.onAfterAddingAll(items);
-  }
-
-  private _onBeforeUploadItem(item:any) {
-    item._onBeforeUpload();
-    this.onBeforeUploadItem(item);
-  }
-
-  private _onProgressItem(item:any, progress:any) {
-    let total = this._getTotalProgress(progress);
-    this.progress = total;
-    item._onProgress(progress);
-    this.onProgressItem(item, progress);
-    this.onProgressAll(total);
-    this._render();
-  }
-
-  private _onSuccessItem(item:any, response:any, status:any, headers:any) {
-    item._onSuccess(response, status, headers);
-    this.onSuccessItem(item, response, status, headers);
-  }
-
-  public _onErrorItem(item:any, response:any, status:any, headers:any) {
-    item._onError(response, status, headers);
-    this.onErrorItem(item, response, status, headers);
-  }
-
-  private _onCancelItem(item:any, response:any, status:any, headers:any) {
-    item._onCancel(response, status, headers);
-    this.onCancelItem(item, response, status, headers);
-  }
-
-  public _onCompleteItem(item:any, response:any, status:any, headers:any) {
-    item._onComplete(response, status, headers);
-    this.onCompleteItem(item, response, status, headers);
-
-    let nextItem = this.getReadyItems()[0];
-    this.isUploading = false;
-
-    if (nextItem) {
-      nextItem.upload();
-      return;
-    }
-
-    this.onCompleteAll();
-    this.progress = this._getTotalProgress();
-    this._render();
-  }
-}
+    FileUploader.prototype.uploadAll = function () {
+        var items = this.getNotUploadedItems().filter(function (item) { return !item.isUploading; });
+        if (!items.length) {
+            return;
+        }
+        items.map(function (item) { return item._prepareToUploading(); });
+        items[0].upload();
+    };
+    FileUploader.prototype.cancelAll = function () {
+        var items = this.getNotUploadedItems();
+        items.map(function (item) { return item.cancel(); });
+    };
+    FileUploader.prototype.isFile = function (value) {
+        return isFile(value);
+    };
+    FileUploader.prototype.isFileLikeObject = function (value) {
+        return value instanceof file_like_object_1.FileLikeObject;
+    };
+    FileUploader.prototype.getIndexOfItem = function (value) {
+        return typeof value === 'number' ? value : this.queue.indexOf(value);
+    };
+    FileUploader.prototype.getNotUploadedItems = function () {
+        return this.queue.filter(function (item) { return !item.isUploaded; });
+    };
+    FileUploader.prototype.getReadyItems = function () {
+        return this.queue
+            .filter(function (item) { return (item.isReady && !item.isUploading); })
+            .sort(function (item1, item2) { return item1.index - item2.index; });
+    };
+    FileUploader.prototype.destroy = function () {
+    };
+    FileUploader.prototype.onAfterAddingAll = function (fileItems) {
+    };
+    FileUploader.prototype.onAfterAddingFile = function (fileItem) {
+    };
+    FileUploader.prototype.onWhenAddingFileFailed = function (item, filter, options) {
+    };
+    FileUploader.prototype.onBeforeUploadItem = function (fileItem) {
+    };
+    FileUploader.prototype.onProgressItem = function (fileItem, progress) {
+    };
+    FileUploader.prototype.onProgressAll = function (progress) {
+    };
+    FileUploader.prototype.onSuccessItem = function (item, response, status, headers) {
+    };
+    FileUploader.prototype.onErrorItem = function (item, response, status, headers) {
+    };
+    FileUploader.prototype.onCancelItem = function (item, response, status, headers) {
+    };
+    FileUploader.prototype.onCompleteItem = function (item, response, status, headers) {
+    };
+    FileUploader.prototype.onCompleteAll = function () {
+    };
+    FileUploader.prototype._getTotalProgress = function (value) {
+        if (value === void 0) { value = 0; }
+        if (this.removeAfterUpload) {
+            return value;
+        }
+        var notUploaded = this.getNotUploadedItems().length;
+        var uploaded = notUploaded ? this.queue.length - notUploaded : this.queue.length;
+        var ratio = 100 / this.queue.length;
+        var current = value * ratio / 100;
+        return Math.round(uploaded * ratio + current);
+    };
+    FileUploader.prototype._getFilters = function (filters) {
+        if (!filters) {
+            return this.filters;
+        }
+        if (Array.isArray(filters)) {
+            return filters;
+        }
+        var names = filters.match(/[^\s,]+/g);
+        return this.filters
+            .filter(function (filter) { return names.indexOf(filter.name) !== -1; });
+    };
+    FileUploader.prototype._render = function () {
+    };
+    FileUploader.prototype._folderFilter = function (item) {
+        return !!(item.size || item.type);
+    };
+    FileUploader.prototype._queueLimitFilter = function () {
+        return this.queue.length < this.queueLimit;
+    };
+    FileUploader.prototype._isValidFile = function (file, filters, options) {
+        var _this = this;
+        this._failFilterIndex = -1;
+        return !filters.length ? true : filters.every(function (filter) {
+            _this._failFilterIndex++;
+            return filter.fn.call(_this, file, options);
+        });
+    };
+    FileUploader.prototype._isSuccessCode = function (status) {
+        return (status >= 200 && status < 300) || status === 304;
+    };
+    FileUploader.prototype._transformResponse = function (response, headers) {
+        return response;
+    };
+    FileUploader.prototype._parseHeaders = function (headers) {
+        var parsed = {}, key, val, i;
+        if (!headers) {
+            return parsed;
+        }
+        headers.split('\n').map(function (line) {
+            i = line.indexOf(':');
+            key = line.slice(0, i).trim().toLowerCase();
+            val = line.slice(i + 1).trim();
+            if (key) {
+                parsed[key] = parsed[key] ? parsed[key] + ', ' + val : val;
+            }
+        });
+        return parsed;
+    };
+    FileUploader.prototype._headersGetter = function (parsedHeaders) {
+        return function (name) {
+            if (name) {
+                return parsedHeaders[name.toLowerCase()] || null;
+            }
+            return parsedHeaders;
+        };
+    };
+    FileUploader.prototype._xhrTransport = function (item) {
+        var _this = this;
+        var xhr = item._xhr = new XMLHttpRequest();
+        var form = new FormData();
+        this._onBeforeUploadItem(item);
+        if (typeof item._file.size !== 'number') {
+            throw new TypeError('The file specified is no longer valid');
+        }
+        form.append(item.alias, item._file, item.file.name);
+        xhr.upload.onprogress = function (event) {
+            var progress = Math.round(event.lengthComputable ? event.loaded * 100 / event.total : 0);
+            _this._onProgressItem(item, progress);
+        };
+        xhr.onload = function () {
+            var headers = _this._parseHeaders(xhr.getAllResponseHeaders());
+            var response = _this._transformResponse(xhr.response, headers);
+            var gist = _this._isSuccessCode(xhr.status) ? 'Success' : 'Error';
+            var method = '_on' + gist + 'Item';
+            _this[method](item, response, xhr.status, headers);
+            _this._onCompleteItem(item, response, xhr.status, headers);
+        };
+        xhr.onerror = function () {
+            var headers = _this._parseHeaders(xhr.getAllResponseHeaders());
+            var response = _this._transformResponse(xhr.response, headers);
+            _this._onErrorItem(item, response, xhr.status, headers);
+            _this._onCompleteItem(item, response, xhr.status, headers);
+        };
+        xhr.onabort = function () {
+            var headers = _this._parseHeaders(xhr.getAllResponseHeaders());
+            var response = _this._transformResponse(xhr.response, headers);
+            _this._onCancelItem(item, response, xhr.status, headers);
+            _this._onCompleteItem(item, response, xhr.status, headers);
+        };
+        xhr.open(item.method, item.url, true);
+        xhr.withCredentials = item.withCredentials;
+        if (this.authToken) {
+            xhr.setRequestHeader('Authorization', this.authToken);
+        }
+        xhr.send(form);
+        this._render();
+    };
+    FileUploader.prototype._iframeTransport = function (item) {
+    };
+    FileUploader.prototype._onWhenAddingFileFailed = function (item, filter, options) {
+        this.onWhenAddingFileFailed(item, filter, options);
+    };
+    FileUploader.prototype._onAfterAddingFile = function (item) {
+        this.onAfterAddingFile(item);
+    };
+    FileUploader.prototype._onAfterAddingAll = function (items) {
+        this.onAfterAddingAll(items);
+    };
+    FileUploader.prototype._onBeforeUploadItem = function (item) {
+        item._onBeforeUpload();
+        this.onBeforeUploadItem(item);
+    };
+    FileUploader.prototype._onProgressItem = function (item, progress) {
+        var total = this._getTotalProgress(progress);
+        this.progress = total;
+        item._onProgress(progress);
+        this.onProgressItem(item, progress);
+        this.onProgressAll(total);
+        this._render();
+    };
+    FileUploader.prototype._onSuccessItem = function (item, response, status, headers) {
+        item._onSuccess(response, status, headers);
+        this.onSuccessItem(item, response, status, headers);
+    };
+    FileUploader.prototype._onErrorItem = function (item, response, status, headers) {
+        item._onError(response, status, headers);
+        this.onErrorItem(item, response, status, headers);
+    };
+    FileUploader.prototype._onCancelItem = function (item, response, status, headers) {
+        item._onCancel(response, status, headers);
+        this.onCancelItem(item, response, status, headers);
+    };
+    FileUploader.prototype._onCompleteItem = function (item, response, status, headers) {
+        item._onComplete(response, status, headers);
+        this.onCompleteItem(item, response, status, headers);
+        var nextItem = this.getReadyItems()[0];
+        this.isUploading = false;
+        if (nextItem) {
+            nextItem.upload();
+            return;
+        }
+        this.onCompleteAll();
+        this.progress = this._getTotalProgress();
+        this._render();
+    };
+    return FileUploader;
+})();
+exports.FileUploader = FileUploader;
+//# sourceMappingURL=file-uploader.js.map

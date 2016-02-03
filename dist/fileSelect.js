@@ -1,49 +1,45 @@
-import { Directive, ElementRef } from 'angular2/core';
-
-import {FileUploader} from './file-uploader';
-
-// todo: filters
-
-@Directive({
-  selector: '[ng2-file-select]',
-  properties: ['uploader'],
-  host: {
-    '(change)': 'onChange()'
-  }
-})
-export class FileSelect {
-  public uploader:FileUploader;
-
-  constructor(private element:ElementRef) {
-  }
-
-  public getOptions() {
-    return this.uploader.options;
-  }
-
-  public getFilters() {
-  }
-
-  public isEmptyAfterSelection():boolean {
-    return !!this.element.nativeElement.attributes.multiple;
-  }
-
-  onChange() {
-    // let files = this.uploader.isHTML5 ? this.element.nativeElement[0].files : this.element.nativeElement[0];
-    let files = this.element.nativeElement.files;
-    let options = this.getOptions();
-    let filters = this.getFilters();
-
-    // if(!this.uploader.isHTML5) this.destroy();
-
-    this.uploader.addToQueue(files, options, filters);
-    if (this.isEmptyAfterSelection()) {
-      // todo
-      // this.element.nativeElement.properties.value = '';
-      /*this.element.nativeElement
-       .replaceWith(this.element = this.element.nativeElement.clone(true)); // IE fix*/
+var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+var __metadata = (this && this.__metadata) || function (k, v) {
+    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
+};
+var core_1 = require('angular2/core');
+var FileSelect = (function () {
+    function FileSelect(element) {
+        this.element = element;
     }
-  }
-}
-
-export const fileUpload:Array<any> = [FileSelect];
+    FileSelect.prototype.getOptions = function () {
+        return this.uploader.options;
+    };
+    FileSelect.prototype.getFilters = function () {
+    };
+    FileSelect.prototype.isEmptyAfterSelection = function () {
+        return !!this.element.nativeElement.attributes.multiple;
+    };
+    FileSelect.prototype.onChange = function () {
+        var files = this.element.nativeElement.files;
+        var options = this.getOptions();
+        var filters = this.getFilters();
+        this.uploader.addToQueue(files, options, filters);
+        if (this.isEmptyAfterSelection()) {
+        }
+    };
+    FileSelect = __decorate([
+        core_1.Directive({
+            selector: '[ng2-file-select]',
+            properties: ['uploader'],
+            host: {
+                '(change)': 'onChange()'
+            }
+        }), 
+        __metadata('design:paramtypes', [core_1.ElementRef])
+    ], FileSelect);
+    return FileSelect;
+})();
+exports.FileSelect = FileSelect;
+exports.fileUpload = [FileSelect];
+//# sourceMappingURL=file-select.js.map
