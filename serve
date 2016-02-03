@@ -1,0 +1,44 @@
+#!/usr/bin/env perl
+use Mojolicious::Lite;
+
+use Mojo::Util 'monkey_patch';
+
+plugin 'Log::Timestamp';
+plugin 'Log::Access';
+app->log->level('info');
+@{app->static->paths} = ''. app->home;
+
+helper cors_headers => {
+  my $c = shift;
+  $c->res->headers
+#    ->header('Access-Control-Allow-Origin' => '*')
+    ->header('Access-Control-Allow-Credentials' => 'true')
+    ->header('Access-Control-Allow-Methods' => join ', ', qw(OPTIONS POST))
+    ->header('Access-Control-Allow-Headers' => join ', ',
+        qw(Content-Type X-CSRF-Token X-Requested-With))
+    ->header('Access-Control-Max-Age' => '1728000');
+  return $c;
+};
+
+options '*' => sub { shift->cors_headers->render(data => '', status => 200) };
+post '/api/upload' => sub {
+    shift->cors_headers->render(data => '', status => 200) };
+
+get '/' => sub { shift->redirect_to('demo/index.html') };
+
+app->secrets(['change me'])->start;
+__DATA__
+
+@@ index.html.ep
+% layout 'default';
+% title 'Welcome';
+<h1>Welcome to the Mojolicious real-time web framework!</h1>
+To learn more, you can browse through the documentation
+<%= link_to 'here' => '/perldoc' %>.
+
+@@ layouts/default.html.ep
+<!DOCTYPE html>
+<html>
+  <head><title><%= title %></title></head>
+  <body><%= content %></body>
+</html>

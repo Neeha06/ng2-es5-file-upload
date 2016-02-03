@@ -1,66 +1,25 @@
 {
-  "name": "ng2-file-upload",
-  "version": "1.0.0-beta.0",
-  "description": "angular2 file upload directives",
-  "scripts": {
-    "deploy": "NODE_ENV=production webpack -p --progress --color --optimize-minimize --optimize-dedupe --optimize-occurence-order",
-    "prepublish": "gulp clean && tsc",
-    "server": "webpack-dev-server --hot --inline --colors --display-error-details --display-cached",
-    "start": "npm run server",
-    "test": "gulp lint"
-  },
+  "name": "ng2-es5-file-upload",
+  "version": "0.0.1",
+  "description": "Angular 2 file upload directives in ES5",
   "main": "ng2-file-upload.js",
-  "typings": "ng2-file-upload.d.ts",
   "keywords": [
     "angular2",
-    "bootstrap",
-    "angularjs",
-    "twitter-bootstrap"
+    "es5",
+    "upload"
   ],
-  "author": "Vyacheslav Chub <vyacheslav.chub@valor-software.com>",
+  "author": "Nic Sandfield <niczero@wow.com>",
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "git+ssh://git@github.com/valor-software/ng2-file-upload.git"
+    "url": "git+ssh://git@github.com/niczero/ng2-es5-file-upload.git"
   },
   "bugs": {
-    "url": "https://github.com/valor-software/ng2-file-upload/issues"
+    "url": "https://github.com/niczero/ng2-es5-file-upload/issues"
   },
-  "homepage": "https://github.com/valor-software/ng2-file-upload#readme",
+  "homepage": "https://niczero.github.io/ng2-es5-file-upload",
   "dependencies": {},
   "devDependencies": {
-    "angular2": "2.0.0-beta.0",
-    "reflect-metadata": "0.1.2",
-    "rxjs": "5.0.0-beta.0",
-    "zone.js": "0.5.10",
-    "es6-shim": "0.33.13",
-    "bootstrap": "3.3.6",
-    "clean-webpack-plugin": "0.1.5",
-    "compression-webpack-plugin": "0.2.0",
-    "eslint": "1.10.3",
-    "exports-loader": "0.6.2",
-    "file-loader": "0.8.5",
-    "gulp": "3.9.0",
-    "gulp-clean": "0.3.1",
-    "gulp-eslint": "1.1.1",
-    "gulp-size": "2.0.0",
-    "gulp-tsc": "1.1.4",
-    "gulp-tslint": "4.3.1",
-    "html-loader": "0.4.0",
-    "markdown-loader": "0.1.7",
-    "marked": "0.3.5",
-    "moment": "2.11.1",
-    "ng2-bootstrap": "1.0.0-beta.2",
-    "pre-commit": "1.1.2",
-    "prismjs": "valorkin/prism",
-    "prismjs-loader": "0.0.2",
-    "raw-loader": "0.5.1",
-    "require-dir": "0.3.0",
-    "ts-loader": "0.8.0",
-    "tslint": "3.2.1",
-    "typescript": "1.7.5",
-    "webpack": "1.12.11",
-    "webpack-dev-server": "1.14.0"
   },
   "contributors": [
     {
