@@ -4,8 +4,7 @@
   else if (typeof define === 'function' && define.amd)
     // AMD: Register as an anonymous module
     define(['exports', 'fileLikeObject'], factory);
-  else if (typeof exports === 'object'
-      && typeof exports.nodeName !== 'string')
+  else if (typeof exports === 'object' && typeof exports.nodeName !== 'string')
     // CommonJS
     factory(exports, require('fileLikeObject'));
   else
@@ -56,23 +55,17 @@
       this.uploader.removeFromQueue(this);
     },
 
-    onBeforeUpload: function () {
-    },
+    onBeforeUpload: function () {},
 
-    onProgress: function (progress) {
-    },
+    onProgress: function (progress) {},
 
-    onSuccess: function (response, status, headers) {
-    },
+    onSuccess: function (response, status, headers) {},
 
-    onError: function (response, status, headers) {
-    },
+    onError: function (response, status, headers) {},
 
-    onCancel: function (response, status, headers) {
-    },
+    onCancel: function (response, status, headers) {},
 
-    onComplete: function (response, status, headers) {
-    },
+    onComplete: function (response, status, headers) {},
 
     _onBeforeUpload: function () {
       this.isReady = true;
@@ -138,4 +131,5 @@
       this.isReady = true;
     }
   });
+
 }));

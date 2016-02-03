@@ -4,8 +4,7 @@
   else if (typeof define === 'function' && define.amd)
     // AMD: Register as an anonymous module
     define(['exports', 'fileLikeObject', 'fileItem'], factory);
-  else if (typeof exports === 'object'
-      && typeof exports.nodeName !== 'string')
+  else if (typeof exports === 'object' && typeof exports.nodeName !== 'string')
     // CommonJS
     factory(exports, require('fileLikeObject'), require('fileItem'));
   else
@@ -31,8 +30,7 @@
       return this.uploader.options;
     },
 
-    getFilters: function () {
-    },
+    getFilters: function () {},
 
     isEmptyAfterSelection: function () {
       return !this.element.nativeElement.attributes.multiple;
@@ -43,8 +41,7 @@
       var options = this.getOptions();
       var filters = this.getFilters();
       this.uploader.addToQueue(files, options, filters);
-      if (this.isEmptyAfterSelection()) {
-      }
+      if (this.isEmptyAfterSelection()) {}
     }
   });
 

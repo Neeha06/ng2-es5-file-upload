@@ -1,18 +1,278 @@
 ;(function (root, factory) {
   if (typeof exports === 'object' && typeof module === 'object')
-    factory(exports, require('fileLikeObject'), require('fileItem'));
+    factory(exports);
   else if (typeof define === 'function' && define.amd)
-    // AMD: Register as an anonymous module
-    define(['exports', 'fileLikeObject', 'fileItem'], factory);
+    define(['exports'], factory);
   else if (typeof exports === 'object' && typeof exports.nodeName !== 'string')
-    // CommonJS
-    factory(exports, require('fileLikeObject'), require('fileItem'));
+    factory(exports);
   else
-    // browser globals (root is window)
-    factory((root.fileUploader = {}), root.fileLikeObject, root.fileItem);
-}(this, function (exports, fileLikeObject, fileItem) {
+    factory(root.ng2-es5-file-uploader = {});
+}(this, function (exports) {
 
-  // Attach properties to the exports object to define exported properties
+  exports.FileLikeObject = ng.core.Class({
+    constructor: function FileLikeObject (fileOrInput) {
+      var isInput = !!(fileOrInput && (fileOrInput.nodeName
+          || fileOrInput.prop && fileOrInput.attr && fileOrInput.find));
+      var fakePathOrObject = isInput ? fileOrInput.value : fileOrInput;
+      if (typeof fakePathOrObject === 'string')
+        this._createFromFakePath(fakePathOrObject);
+      else
+        this._createFromObject(fakePathOrObject);
+    },
+
+    _createFromFakePath: function (path) {
+      this.lastModifiedDate = null;
+      this.size = null;
+      this.type = 'like/' + path.slice(path.lastIndexOf('.') + 1).toLowerCase();
+      this.name = path.slice(path.lastIndexOf('/') + path.lastIndexOf('\\')
+          + 2);
+    },
+
+    _createFromObject: function (object) {
+      this.size = object.size;
+      this.type = object.type;
+      this.name = object.name;
+    }
+  });
+
+  exports.FileItem = ng.core.Class({
+    constructor: function FileItem (uploader, some, options) {
+      this.uploader = uploader;
+      this.some = some;
+      this.options = options;
+      this.alias = 'file';
+      this.url = '/';
+      this.method = 'POST';
+      this.headers = [];
+      this.withCredentials = true;
+      this.formData = [];
+      this.isReady = false;
+      this.isUploading = false;
+      this.isUploaded = false;
+      this.isSuccess = false;
+      this.isCancel = false;
+      this.isError = false;
+      this.progress = 0;
+      this.index = null;
+      this.file = new exports.FileLikeObject(some);
+      this._file = some;
+      this.url = uploader.url;
+    },
+
+    upload: function () {
+      try {
+        this.uploader.uploadItem(this);
+      }
+      catch (e) {
+        this.uploader._onCompleteItem(this, '', 0, []);
+        this.uploader._onErrorItem(this, '', 0, []);
+      }
+    },
+
+    cancel: function () {
+      this.uploader.cancelItem(this);
+    },
+
+    remove: function () {
+      this.uploader.removeFromQueue(this);
+    },
+
+    onBeforeUpload: function () {},
+
+    onProgress: function (progress) {},
+
+    onSuccess: function (response, status, headers) {},
+
+    onError: function (response, status, headers) {},
+
+    onCancel: function (response, status, headers) {},
+
+    onComplete: function (response, status, headers) {},
+
+    _onBeforeUpload: function () {
+      this.isReady = true;
+      this.isUploading = true;
+      this.isUploaded = false;
+      this.isSuccess = false;
+      this.isCancel = false;
+      this.isError = false;
+      this.progress = 0;
+      this.onBeforeUpload();
+    },
+
+    _onProgress: function (progress) {
+      this.progress = progress;
+      this.onProgress(progress);
+    },
+
+    _onSuccess: function (response, status, headers) {
+      this.isReady = false;
+      this.isUploading = false;
+      this.isUploaded = true;
+      this.isSuccess = true;
+      this.isCancel = false;
+      this.isError = false;
+      this.progress = 100;
+      this.index = null;
+      this.onSuccess(response, status, headers);
+    },
+
+    _onError: function (response, status, headers) {
+      this.isReady = false;
+      this.isUploading = false;
+      this.isUploaded = true;
+      this.isSuccess = false;
+      this.isCancel = false;
+      this.isError = true;
+      this.progress = 0;
+      this.index = null;
+      this.onError(response, status, headers);
+    },
+
+    _onCancel: function (response, status, headers) {
+      this.isReady = false;
+      this.isUploading = false;
+      this.isUploaded = false;
+      this.isSuccess = false;
+      this.isCancel = true;
+      this.isError = false;
+      this.progress = 0;
+      this.index = null;
+      this.onCancel(response, status, headers);
+    },
+
+    _onComplete: function (response, status, headers) {
+      this.onComplete(response, status, headers);
+      if (this.uploader.removeAfterUpload) {
+        this.remove();
+      }
+    },
+
+    _prepareToUploading: function () {
+      this.index = this.index || ++this.uploader._nextIndex;
+      this.isReady = true;
+    }
+  });
+
+  exports.FileSelect = ng.core
+  .Directive({
+    selector: '[ng2-file-select]',
+    properties: ['uploader'],
+    host: {
+      '(change)': 'onChange()'
+    }
+  })
+  .Class({
+    constructor: [ng.core.ElementRef, function FileSelect (element) {
+      this.element = element;
+    }],
+
+    getOptions: function () {
+      return this.uploader.options;
+    },
+
+    getFilters: function () {},
+
+    isEmptyAfterSelection: function () {
+      return !this.element.nativeElement.attributes.multiple;
+    },
+
+    onChange: function () {
+      var files = this.element.nativeElement.files;
+      var options = this.getOptions();
+      var filters = this.getFilters();
+      this.uploader.addToQueue(files, options, filters);
+      if (this.isEmptyAfterSelection()) {}
+    }
+  });
+
+  exports.FileDrop = ng.core
+  .Directive({
+    selector: '[ng2-file-drop]',
+    properties: ['uploader'],
+    events: ['fileOver'],
+    host: {
+      '(drop)': 'onDrop($event)',
+      '(dragover)': 'onDragOver($event)',
+      '(dragleave)': 'onDragLeave($event)'
+    }
+  })
+  .Class({
+    constructor: [ng.core.ElementRef, function FileDrop (element) {
+      this.element = element;
+      this.fileOver = new ng.core.EventEmitter();
+    }],
+
+    getOptions: function () {
+      return this.uploader.options;
+    },
+
+    getFilters: function () {},
+
+    onDrop: function (event) {
+      var transfer = this._getTransfer(event);
+      if (!transfer) {
+        return;
+      }
+      var options = this.getOptions();
+      var filters = this.getFilters();
+      this._preventAndStop(event);
+      this.uploader.addToQueue(transfer.files, options, filters);
+      this.fileOver.next(false);
+    },
+
+    onDragOver: function (event) {
+      var transfer = this._getTransfer(event);
+      if (!this._haveFiles(transfer.types)) {
+        return;
+      }
+      transfer.dropEffect = 'copy';
+      this._preventAndStop(event);
+      this.fileOver.next(true);
+    },
+
+    onDragLeave: function (event) {
+      if (event.currentTarget === this.element[0]) {
+        return;
+      }
+      this._preventAndStop(event);
+      this.fileOver.next(false);
+    },
+
+    _getTransfer: function (event) {
+      return event.dataTransfer ? event.dataTransfer
+          : event.originalEvent.dataTransfer;
+    },
+
+    _preventAndStop: function (event) {
+      event.preventDefault();
+      event.stopPropagation();
+    },
+
+    _haveFiles: function (types) {
+      if (!types) {
+        return false;
+      }
+      if (types.indexOf) {
+        return types.indexOf('Files') !== -1;
+      }
+      else if (types.contains) {
+        return types.contains('Files');
+      }
+      else {
+        return false;
+      }
+    },
+
+    _addOverClass: function (item) {
+      item.addOverClass();
+    },
+
+    _removeOverClass: function (item) {
+      item.removeOverClass();
+    }
+  });
+
   exports.FileUploader = ng.core
   .Directive({
     selector: 'uploader'
@@ -45,9 +305,9 @@
       var count = this.queue.length;
       var addedFileItems = [];
       list.map(function (some) {
-        var temp = new fileLikeObject.FileLikeObject(some);
+        var temp = new exports.FileLikeObject(some);
         if (_this._isValidFile(temp, [], options)) {
-          var fi = new fileItem.FileItem(_this, some, options);
+          var fi = new exports.FileItem(_this, some, options);
           addedFileItems.push(fi);
           _this.queue.push(fi);
           _this._onAfterAddingFile(fi);
@@ -126,7 +386,7 @@
     },
 
     isFileLikeObject: function (value) {
-      return value instanceof fileLikeObject.FileLikeObject;
+      return value instanceof exports.FileLikeObject;
     },
 
     getIndexOfItem: function (value) {
@@ -189,7 +449,7 @@
       }
       var names = filters.match(/[^\s,]+/g);
       return this.filters
-        .filter(function (filtr) { return names.indexOf(filtr.name) !== -1; });
+        .filter(function (filter) { return names.indexOf(filter.name) !== -1; });
     },
 
     _render: function () {},

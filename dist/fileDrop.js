@@ -4,8 +4,7 @@
   else if (typeof define === 'function' && define.amd)
     // AMD: Register as an anonymous module
     define(['exports'], factory);
-  else if (typeof exports === 'object'
-      && typeof exports.nodeName !== 'string')
+  else if (typeof exports === 'object' && typeof exports.nodeName !== 'string')
     // CommonJS
     factory(exports);
   else
@@ -35,8 +34,7 @@
       return this.uploader.options;
     },
 
-    getFilters: function () {
-    },
+    getFilters: function () {},
 
     onDrop: function (event) {
       var transfer = this._getTransfer(event);
@@ -69,7 +67,8 @@
     },
 
     _getTransfer: function (event) {
-      return event.dataTransfer ? event.dataTransfer : event.originalEvent.dataTransfer;
+      return event.dataTransfer ? event.dataTransfer
+          : event.originalEvent.dataTransfer;
     },
 
     _preventAndStop: function (event) {
@@ -81,7 +80,7 @@
       if (!types) {
         return false;
       }
-      if (types.indexOf) {
+      else if (types.indexOf) {
         return types.indexOf('Files') !== -1;
       }
       else if (types.contains) {
@@ -99,7 +98,6 @@
     _removeOverClass: function (item) {
       item.removeOverClass();
     }
-
   });
 
 }));
