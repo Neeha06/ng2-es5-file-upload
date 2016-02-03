@@ -15,7 +15,7 @@
         root.fileUploader);
 }(this, function (exports, fileSelect, fileDrop, fileUploader) {
 
-  const URL = '/api/upload';
+  const URL = 'http//jsonplaceholder.typicode.com/posts';
 
   // Attach properties to the exports object to define exported properties
   exports.Upload = ng.core.Component({
