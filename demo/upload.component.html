@@ -1,7 +1,7 @@
 <style>
-.my-drop-zone { border: dotted 3px lightgray; }
-.nv-file-over { border: dotted 3px red; }
-.another-file-over-class { border: dotted 3px green; }
+.my-dropzone { border: dotted 3px lightgray; }
+.nv-fileover { border: dotted 3px red; }
+.another-fileover { border: dotted 3px green; }
 
 html, body { height: 100%; }
 </style>
@@ -12,16 +12,16 @@ html, body { height: 100%; }
 
       <h3>Select files</h3>
 
-      <div ng2-file-drop [ngClass]="{'nv-file-over': hasBaseDropZoneOver}"
-          (file-over)="fileOverBase($event)" [uploader]="uploader"
-          class="well my-drop-zone">
+      <div ng2-file-drop [ngClass]="{'nv-fileover': hasBaseDropzoneOver}"
+          (fileover)="fileOverBase($event)" [uploader]="uploader"
+          class="well my-dropzone">
         Base drop zone
       </div>
 
       <div ng2-file-drop
-          [ngClass]="{'another-file-over-class': hasAnotherDropZoneOver}"
-          (file-over)="fileOverAnother($event)" [uploader]="uploader"
-          class="well my-drop-zone">
+          [ngClass]="{'another-fileover': hasAnotherDropzoneOver}"
+          (fileover)="fileOverAnother($event)" [uploader]="uploader"
+          class="well my-dropzone">
         Another drop zone
       </div>
 

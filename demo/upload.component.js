@@ -35,6 +35,16 @@
   .Class({
     constructor: function Upload () {
       this.uploader = new fileUploader.FileUploader({url: URL});
+      this.hasBaseDropzoneOver = false;
+      this.hasAnotherDropzoneOver = false;
+    },
+
+    fileOverBase: function (e) {
+      this.hasBaseDropzoneOver = e;
+    },
+
+    fileOverAnother: function (e) {
+      this.hasAnotherDropzoneOver = e;
     }
   });
 

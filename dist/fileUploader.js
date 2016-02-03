@@ -144,41 +144,29 @@
         .sort(function (item1, item2) { return item1.index - item2.index; });
     },
 
-    destroy: function () {
-    },
+    destroy: function () {},
 
-    onAfterAddingAll: function (fileItems) {
-    },
+    onAfterAddingAll: function (fileItems) {},
 
-    onAfterAddingFile: function (fileItem) {
-    },
+    onAfterAddingFile: function (fileItem) {},
 
-    onWhenAddingFileFailed: function (item, filter, options) {
-    },
+    onWhenAddingFileFailed: function (item, filter, options) {},
 
-    onBeforeUploadItem: function (fileItem) {
-    },
+    onBeforeUploadItem: function (fileItem) {},
 
-    onProgressItem: function (fileItem, progress) {
-    },
+    onProgressItem: function (fileItem, progress) {},
 
-    onProgressAll: function (progress) {
-    },
+    onProgressAll: function (progress) {},
 
-    onSuccessItem: function (item, response, status, headers) {
-    },
+    onSuccessItem: function (item, response, status, headers) {},
 
-    onErrorItem: function (item, response, status, headers) {
-    },
+    onErrorItem: function (item, response, status, headers) {},
 
-    onCancelItem: function (item, response, status, headers) {
-    },
+    onCancelItem: function (item, response, status, headers) {},
 
-    onCompleteItem: function (item, response, status, headers) {
-    },
+    onCompleteItem: function (item, response, status, headers) {},
 
-    onCompleteAll: function () {
-    },
+    onCompleteAll: function () {},
 
     _getTotalProgress: function (value) {
       if (value === void 0) { value = 0; }
@@ -205,8 +193,7 @@
         .filter(function (filter) { return names.indexOf(filter.name) !== -1; });
     },
 
-    _render: function () {
-    },
+    _render: function () {},
 
     _folderFilter: function (item) {
       return !!(item.size || item.type);
@@ -301,8 +288,7 @@
       this._render();
     },
 
-    _iframeTransport: function (item) {
-    },
+    _iframeTransport: function (item) {},
 
     _onWhenAddingFileFailed: function (item, filter, options) {
       this.onWhenAddingFileFailed(item, filter, options);
