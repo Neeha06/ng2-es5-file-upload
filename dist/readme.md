@@ -1,12 +1,9 @@
-### Usage
-```typescript
-import {FileSelect, FileDrop, FileUploader} from 'ng2-file-upload';
-```
+## Usage
 
 ### Annotations
-```typescript
+```javascript
 // class FileSelect
-@Directive({
+.Directive({
   selector: '[ng2-file-select]',
   properties: ['uploader'],
   host: {
@@ -15,9 +12,9 @@ import {FileSelect, FileDrop, FileUploader} from 'ng2-file-upload';
 })
 ```
 
-```typescript
+```javascript
 // class FileDrop
-@Directive({
+.Directive({
   selector: '[ng2-file-drop]',
   properties: ['uploader'],
   events: ['fileOver'],
@@ -33,21 +30,23 @@ import {FileSelect, FileDrop, FileUploader} from 'ng2-file-upload';
 
 ### Properties
 
-  - `uploader` - (`FileUploader`) - uploader object. See using in [demo](https://github.com/valor-software/ng2-file-upload/blob/master/demo/components/file-upload/simple-demo.ts)
+- `uploader` - (`FileUploader`) - uploader object.  See usage in
+[demo](https://github.io//niczero/ng2-es5-file-upload/blob/master/demo/upload.component.js)
 
-  Parameters that supported by this object:
+Parameters supported by this object:
 
-  1. `url` - URL of File Uploader's route
-  2. `authToken` - auth token that will be applied as 'Authorization' header during file send.
+1. `url` - URL to POST to.
+2. `authToken` - auth token that will be applied as 'Authorization' header
+   during file send.
 
 ## FileDrop API
 
 ### Properties
 
-  - `uploader` - (`FileUploader`) - uploader object. See using in [demo](https://github.com/valor-software/ng2-file-upload/blob/master/demo/components/file-upload/simple-demo.ts)
+As above.
 
 ### Events
 
-  - `file-over` - it fires during 'over' and 'out' events for Drop Area; returns `boolean`: `true` if file is over Drop Area, `false` in case of out.
-  See using in [ts demo](https://github.com/valor-software/ng2-file-upload/blob/master/demo/components/file-upload/simple-demo.ts) and
-  [html demo](https://github.com/valor-software/ng2-file-upload/blob/master/demo/components/file-upload/simple-demo.html)
+- `file-over` - it fires during 'over' and 'out' events for drop area; returns
+  `boolean`: `true` if file is over drop area, `false` otherwise.  See usage in
+[demo](https://github.io//niczero/ng2-es5-file-upload/blob/master/demo/upload.component.js)

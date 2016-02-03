@@ -1,44 +1,47 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <title>Angular2 File Upload</title>
+<title>Angular2 File Upload in ES5</title>
 
-  <meta charset="utf-8">
-  <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <meta name="description" content="Angular2 File Upload">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
+<meta charset="utf-8">
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta http-equiv="Content-Style-Type" content="text/css">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="description" content="Angular2 File Upload in ES5">
+<meta name="viewport" content="width=device-width, initial-scale=1">
 
-  <link rel="icon" href="data:;base64,iVBORw0KGgo=">
-  <link rel="author" href="https://github.com/valor-software/ng2-file-upload/graphs/contributors">
+<link rel="author" href="https://github.com/niczero/ng2-es5-file-upload/graphs/contributors">
 
-  <!--link to bootstrap.css-->
-  <link rel="stylesheet" href="assets/css/prism-okaidia.css">
-  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
-  <link rel="stylesheet" href="assets/css/style.css">
-
-  <style media="screen">
-    .header {
-      background-color: #0143A3;
-      background: -webkit-linear-gradient(#0143A3, #0273D4);
-      background: linear-gradient(#0143A3, #0273D4);
-      color: #FFF;
-      padding: 30px;
-    }
-    section {
-      padding-top: 30px;
-    }
-  </style>
+<link rel="stylesheet"
+  href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
+<link rel="stylesheet"
+  href="https://fonts.googleapis.com/css?family=Lato:400,300">
 </head>
-<body>
-  <app>
-    Loading...
-  </app>
 
-  <!-- Angular2 files -->
-  <script src="/build/angular2.js"></script>
-  <!-- Angular2 file upload script -->
-  <script src="/build/angular2-file-upload.js"></script>
-  <!-- App script -->
-  <script src="/build/angular2-file-upload-demo.js"></script>
+<body>
+<div id="app" class="container">Loading...</div>
+
+<script
+  src="https://cdnjs.cloudflare.com/ajax/libs/es6-shim/0.33.3/es6-shim.min.js">
+</script>
+<script src="//code.angularjs.org/2.0.0-beta.2/angular2-polyfills.min.js">
+</script>
+<script src="//code.angularjs.org/2.0.0-beta.2/Rx.umd.min.js"></script>
+<script src="//code.angularjs.org/2.0.0-beta.2/angular2-all.umd.js">
+</script>
+
+<script src="../dist/fileLikeObject.js"></script>
+<script src="../dist/fileItem.js"></script>
+<script src="../dist/fileSelect.js"></script>
+<script src="../dist/fileDrop.js"></script>
+<script src="../dist/fileUploader.js"></script>
+<script src="upload.component.js"></script>
+<script src="app.component.js"></script>
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+  ng.platform.browser.bootstrap(window.app.App, []);
+//  ng.core.enableProdMode();
+});
+</script>
 </body>
 </html>

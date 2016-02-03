@@ -8,7 +8,8 @@ plugin 'Log::Access';
 app->log->level('info');
 @{app->static->paths} = ''. app->home;
 
-helper cors_headers => {
+# This is CORS-open; need to restrict allowed origin
+helper cors_headers => sub {
   my $c = shift;
   $c->res->headers
 #    ->header('Access-Control-Allow-Origin' => '*')
@@ -31,10 +32,8 @@ __DATA__
 
 @@ index.html.ep
 % layout 'default';
-% title 'Welcome';
-<h1>Welcome to the Mojolicious real-time web framework!</h1>
-To learn more, you can browse through the documentation
-<%= link_to 'here' => '/perldoc' %>.
+% title 'File Upload';
+<h1>Mojolicious backend demo for ng2-es5-file-upload</h1>
 
 @@ layouts/default.html.ep
 <!DOCTYPE html>
