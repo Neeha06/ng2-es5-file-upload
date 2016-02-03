@@ -1,25 +1,16 @@
-(function (root, factory) {
-  if (typeof define === 'function' && define.amd) {
+;(function (root, factory) {
+  if (typeof exports === 'object' && typeof module === 'object')
+    factory(exports, require('fileLikeObject'), require('fileItem'));
+  else if (typeof define === 'function' && define.amd)
     // AMD: Register as an anonymous module
     define(['exports', 'fileLikeObject', 'fileItem'], factory);
-    console.log('fileSelect@AMD');
-    // or if global is also required:
-    // define(['exports', 'fileLikeObject', 'fileItem'],
-    //     function (exports, fileLikeObject, fileItem) {
-    //   factory((root.fileSelect = exports), fileLikeObject, fileItem);
-    // });
-  }
   else if (typeof exports === 'object'
-      && typeof exports.nodeName !== 'string') {
+      && typeof exports.nodeName !== 'string')
     // CommonJS
-    factory(exports, require('fileLikeObject', 'fileItem'));
-    console.log('fileSelect@CommonJS');
-  }
-  else {
+    factory(exports, require('fileLikeObject'), require('fileItem'));
+  else
     // browser globals (root is window)
     factory((root.fileSelect = {}), root.fileLikeObject, root.fileItem);
-    console.log('fileSelect@globals');
-  }
 }(this, function (exports, fileLikeObject, fileItem) {
 
   // Attach properties to the exports object to define exported properties

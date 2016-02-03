@@ -1,24 +1,16 @@
-(function (root, factory) {
-  if (typeof define === 'function' && define.amd) {
+;(function (root, factory) {
+  if (typeof exports === 'object' && typeof module === 'object')
+    factory(exports);
+  else if (typeof define === 'function' && define.amd)
     // AMD: Register as an anonymous module
     define(['exports'], factory);
-    console.log('fileDrop@AMD');
-    // or if global is also required:
-    // define(['exports'], function (exports) {
-    //   factory(root.fileDrop = exports);
-    // });
-  }
   else if (typeof exports === 'object'
-      && typeof exports.nodeName !== 'string') {
+      && typeof exports.nodeName !== 'string')
     // CommonJS
     factory(exports);
-    console.log('fileDrop@CommonJS');
-  }
-  else {
+  else
     // browser globals (root is window)
     factory(root.fileDrop = {});
-    console.log('fileDrop@globals');
-  }
 }(this, function (exports) {
 
   // Attach properties to the exports object to define exported properties
