@@ -1,5 +1,7 @@
 ;(function (root, factory) {
-  if (typeof define === 'function' && define.amd)
+  if (typeof exports === 'object' && typeof module === 'object')
+    factory(exports, require('upload'));
+  else if (typeof define === 'function' && define.amd)
     // AMD: Register as an anonymous module
     define(['exports', 'upload'], factory);
   else if (typeof exports === 'object' && typeof exports.nodeName !== 'string')
