@@ -1,18 +1,3 @@
-;(function (root, factory) {
-  if (typeof exports === 'object' && typeof module === 'object')
-    factory(exports);
-  else if (typeof define === 'function' && define.amd)
-    // AMD: Register as an anonymous module
-    define(['exports'], factory);
-  else if (typeof exports === 'object' && typeof exports.nodeName !== 'string')
-    // CommonJS
-    factory(exports);
-  else
-    // browser globals (root is window)
-    factory(root.fileDrop = {});
-}(this, function (exports) {
-
-  // Attach properties to the exports object to define exported properties
   exports.FileDrop = ng.core
   .Directive({
     selector: '[ng2-file-drop]',
@@ -99,5 +84,3 @@
       item.removeOverClass();
     }
   });
-
-}));

@@ -1,19 +1,7 @@
-;(function (root, factory) {
-  if (typeof exports === 'object' && typeof module === 'object')
-    factory(exports, require('fileLikeObject'));
-  else if (typeof define === 'function' && define.amd)
-    // AMD: Register as an anonymous module
-    define(['exports', 'fileLikeObject'], factory);
-  else if (typeof exports === 'object' && typeof exports.nodeName !== 'string')
-    // CommonJS
-    factory(exports, require('fileLikeObject'));
-  else
-    // browser globals (root is window)
-    factory((root.fileItem = {}), root.fileLikeObject);
-}(this, function (exports, fileLikeObject) {
+  //require('./fileLikeObject.js');
 
-  // Attach properties to the exports object to define exported properties
-  exports.FileItem = ng.core.Class({
+  exports.FileItem = ng.core
+  .Class({
     constructor: function FileItem (uploader, some, options) {
       this.uploader = uploader;
       this.some = some;
@@ -32,7 +20,7 @@
       this.isError = false;
       this.progress = 0;
       this.index = null;
-      this.file = new fileLikeObject.FileLikeObject(some);
+      this.file = new exports.FileLikeObject(some);
       this._file = some;
       this.url = uploader.url;
     },
@@ -131,5 +119,3 @@
       this.isReady = true;
     }
   });
-
-}));

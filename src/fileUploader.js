@@ -1,18 +1,6 @@
-;(function (root, factory) {
-  if (typeof exports === 'object' && typeof module === 'object')
-    factory(exports, require('fileLikeObject'), require('fileItem'));
-  else if (typeof define === 'function' && define.amd)
-    // AMD: Register as an anonymous module
-    define(['exports', 'fileLikeObject', 'fileItem'], factory);
-  else if (typeof exports === 'object' && typeof exports.nodeName !== 'string')
-    // CommonJS
-    factory(exports, require('fileLikeObject'), require('fileItem'));
-  else
-    // browser globals (root is window)
-    factory((root.fileUploader = {}), root.fileLikeObject, root.fileItem);
-}(this, function (exports, fileLikeObject, fileItem) {
+  //require('./fileLikeObject.js');
+  //require('./fileItem.js');
 
-  // Attach properties to the exports object to define exported properties
   exports.FileUploader = ng.core
   .Directive({
     selector: 'uploader'
@@ -45,9 +33,9 @@
       var count = this.queue.length;
       var addedFileItems = [];
       list.map(function (some) {
-        var temp = new fileLikeObject.FileLikeObject(some);
+        var temp = new exports.FileLikeObject(some);
         if (_this._isValidFile(temp, [], options)) {
-          var fi = new fileItem.FileItem(_this, some, options);
+          var fi = new exports.FileItem(_this, some, options);
           addedFileItems.push(fi);
           _this.queue.push(fi);
           _this._onAfterAddingFile(fi);
@@ -126,7 +114,7 @@
     },
 
     isFileLikeObject: function (value) {
-      return value instanceof fileLikeObject.FileLikeObject;
+      return value instanceof exports.FileLikeObject;
     },
 
     getIndexOfItem: function (value) {
@@ -147,13 +135,13 @@
 
     onAfterAddingAll: function (fileItems) {},
 
-    onAfterAddingFile: function (fileItem) {},
+    onAfterAddingFile: function (fItem) {},
 
     onWhenAddingFileFailed: function (item, filter, options) {},
 
-    onBeforeUploadItem: function (fileItem) {},
+    onBeforeUploadItem: function (fItem) {},
 
-    onProgressItem: function (fileItem, progress) {},
+    onProgressItem: function (fItem, progress) {},
 
     onProgressAll: function (progress) {},
 
@@ -168,7 +156,9 @@
     onCompleteAll: function () {},
 
     _getTotalProgress: function (value) {
-      if (value === void 0) { value = 0; }
+      if (value === undefined) {
+        value = 0;
+      }
       if (this.removeAfterUpload) {
         return value;
       }
@@ -188,8 +178,8 @@
         return filters;
       }
       var names = filters.match(/[^\s,]+/g);
-      return this.filters
-        .filter(function (filtr) { return names.indexOf(filtr.name) !== -1; });
+      return this.filters.filter(
+          function (filter) { return names.indexOf(filter.name) !== -1; });
     },
 
     _render: function () {},
@@ -344,5 +334,3 @@
       this._render();
     }
   });
-
-}));

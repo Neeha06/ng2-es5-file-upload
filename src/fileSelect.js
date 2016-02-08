@@ -1,18 +1,3 @@
-;(function (root, factory) {
-  if (typeof exports === 'object' && typeof module === 'object')
-    factory(exports, require('fileLikeObject'), require('fileItem'));
-  else if (typeof define === 'function' && define.amd)
-    // AMD: Register as an anonymous module
-    define(['exports', 'fileLikeObject', 'fileItem'], factory);
-  else if (typeof exports === 'object' && typeof exports.nodeName !== 'string')
-    // CommonJS
-    factory(exports, require('fileLikeObject'), require('fileItem'));
-  else
-    // browser globals (root is window)
-    factory((root.fileSelect = {}), root.fileLikeObject, root.fileItem);
-}(this, function (exports, fileLikeObject, fileItem) {
-
-  // Attach properties to the exports object to define exported properties
   exports.FileSelect = ng.core
   .Directive({
     selector: '[ng2-file-select]',
@@ -44,5 +29,3 @@
       if (this.isEmptyAfterSelection()) {}
     }
   });
-
-}));
