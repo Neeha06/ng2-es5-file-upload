@@ -229,7 +229,7 @@
         item.cancel();
       }
       this.queue.splice(index, 1);
-      this.progress = this._getTotalProgress();
+      this.progress = this.queue.length > 0 ? this._getTotalProgress() : 0;
     },
 
     clearQueue: function () {

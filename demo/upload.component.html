@@ -1,8 +1,11 @@
 <style>
-.my-dropzone { border: dotted 3px lightgray; }
-.nv-fileover { border: dotted 3px red; }
-.another-fileover { border: dotted 3px green; }
-
+.my-dropzone { border: dotted 2px lightgray; }
+.nv-fileover { border: dotted 2px red; }
+.another-fileover { border: dotted 2px green; }
+.progress {
+  margin-bottom: 0;
+  border-radius: 2px;
+}
 html, body { height: 100%; }
 </style>
 
@@ -55,7 +58,7 @@ html, body { height: 100%; }
             <td *ngIf="uploader.isHTML5">
               <div class="progress" style="margin-bottom: 0;">
                 <div class="progress-bar" role="progressbar"
-                    [ngStyle]="{ 'width': item.progress + '%' }"></div>
+                    [ngStyle]="{'width': item.progress + '%'}"></div>
               </div>
             </td>
             <td class="text-center">
@@ -90,7 +93,9 @@ html, body { height: 100%; }
           Queue progress:
           <div class="progress" style="">
             <div class="progress-bar" role="progressbar"
-                [ngStyle]="{ 'width': uploader.progress + '%' }"></div>
+                [ngStyle]="{'width': uploader.progress + '%'}">
+              {{uploader.progress + '%'}}
+            </div>
           </div>
         </div>
         <button type="button" class="btn btn-success btn-s"

@@ -1,6 +1,6 @@
 {
   "name": "ng2-es5-file-upload",
-  "version": "0.0.1",
+  "version": "0.1.0",
   "description": "Angular 2 file upload directives in ES5",
   "main": "ng2-file-upload.js",
   "keywords": [
