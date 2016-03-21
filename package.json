@@ -12,12 +12,12 @@
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "git+ssh://git@github.com/niczero/ng2-es5-file-upload.git"
+    "url": "git+ssh://git@github.com/Neeha06/ng2-es5-file-upload.git"
   },
   "bugs": {
-    "url": "https://github.com/niczero/ng2-es5-file-upload/issues"
+    "url": "https://github.com/Neeha06/ng2-es5-file-upload/issues"
   },
-  "homepage": "https://niczero.github.io/ng2-es5-file-upload",
+  "homepage": "https://Neeha06.github.io/ng2-es5-file-upload",
   "dependencies": {},
   "devDependencies": {
     "grunt-cli": "^0.1.13",
